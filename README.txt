@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------------
+-- 
+-- Arcade: Dream Shopper for MiSTer by Sorgelig
+-- 20 November 2017
+-- 
+---------------------------------------------------------------------------------
+-- A simulation model of Dream Shopper hardware
+-- Copyright (c) Sorgelig 
+-- Based on Pacman core: Copyright (c) MikeJ - Feb 2007
+---------------------------------------------------------------------------------
+-- 
+-- Support screen and controls rotation on HDMI output.
+-- Only controls are rotated on VGA output.
+-- 
+-- 
+-- Keyboard inputs :
+--
+--   F2          : Coin + Start 2 players
+--   F1          : Coin + Start 1 player
+--   SPACE,CTRL  : Action
+--   UP,DOWN,LEFT,RIGHT arrows : Movements
+--
+-- Joystick support.
+-- 
+---------------------------------------------------------------------------------
