@@ -74,6 +74,10 @@ entity DREAMSHP is
 		dipsw1     : in  std_logic_vector(7 downto 0);
 		dipsw2     : in  std_logic_vector(7 downto 0);
 		--
+		dn_addr    : in  std_logic_vector(15 downto 0);
+		dn_data    : in  std_logic_vector(7 downto 0);
+		dn_wr      : in  std_logic;
+		--
 		RESET      : in  std_logic;
 		CLK        : in  std_logic;
 		ENA_6      : in  std_logic;
@@ -166,7 +170,11 @@ architecture RTL of DREAMSHP is
 	);
 	end component;
 
+	signal rom0_cs,rom1_cs  : std_logic;
 begin
+
+rom0_cs <= '1' when dn_addr(15 downto 14) = "00" else '0';
+rom1_cs <= '1' when dn_addr(15 downto 14) = "01" else '0';
   
 --
 -- video timing
@@ -263,7 +271,7 @@ end process;
 u_cpu : entity work.T80sed
 port map
 (
-	RESET_n => watchdog_reset_l,
+	RESET_n => watchdog_reset_l and (not reset),
 	CLK_n   => clk,
 	CLKEN   => hcnt(0) and ena_6,
 	WAIT_n  => sync_bus_wreq_l,
@@ -361,20 +369,30 @@ cpu_data_in <=	cpu_vec_reg      when (cpu_iorq_l = '0') and (cpu_m1_l = '0') els
 					dipsw2           when iodec_dipsw2_l = '0' else
 					ram_data;
 
-u_program_rom : entity work.ROM_PGM_0
+u_program_rom0 : work.dpram generic map (14,8)
 port map
 (
-	CLK  => clk,
-	ADDR => cpu_addr(13 downto 0),
-	DATA => program_rom_dinl
+	clock_a   => clk,
+	wren_a    => dn_wr and rom0_cs,
+	address_a => dn_addr(13 downto 0),
+	data_a    => dn_data,
+
+	clock_b   => clk,
+	address_b => cpu_addr(13 downto 0),
+	q_b       => program_rom_dinl
 );
 
-u_program_rom1 : entity work.ROM_PGM_1
+u_program_rom1 : work.dpram generic map (14,8)
 port map
 (
-	CLK  => clk,
-	ADDR => cpu_addr(13 downto 0),
-	DATA => program_rom_dinh
+	clock_a   => clk,
+	wren_a    => dn_wr and rom1_cs,
+	address_a => dn_addr(13 downto 0),
+	data_a    => dn_data,
+
+	clock_b   => clk,
+	address_b => cpu_addr(13 downto 0),
+	q_b       => program_rom_dinh
 );
 
 ram_cs <= '1' when cpu_addr(15 downto 12) = X"4" else '0';
@@ -432,6 +450,10 @@ port map
 	I_VBLANK  => vblank,
 	I_FLIP    => control_reg(3),
 	O_HBLANK  => O_HBLANK,
+	--
+	dn_addr   => dn_addr,
+	dn_data   => dn_data,
+	dn_wr     => dn_wr,
 	--
 	O_RED     => O_VIDEO_R,
 	O_GREEN   => O_VIDEO_G,

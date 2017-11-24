@@ -357,9 +357,6 @@ set_global_assignment -name CDF_FILE jtag_lite.cdf
 set_global_assignment -name QIP_FILE sys/sys.qip
 set_global_assignment -name QIP_FILE sys/sysmem.qip
 set_global_assignment -name SYSTEMVERILOG_FILE ym2149.sv
-set_global_assignment -name VHDL_FILE ROM/GFX1.vhd
-set_global_assignment -name VHDL_FILE ROM/ROM_PGM_0.vhd
-set_global_assignment -name VHDL_FILE ROM/ROM_PGM_1.vhd
 set_global_assignment -name VHDL_FILE ROM/PROM7_DST.vhd
 set_global_assignment -name VHDL_FILE ROM/PROM4_DST.vhd
 set_global_assignment -name VHDL_FILE cpu/T80sed.vhd
